@@ -1,0 +1,52 @@
+#include <reg51.h>
+
+// Define the input pins for the sensors
+sbit sensor1 = P0^0; // Sensor 1 connected to P0.0
+sbit sensor2 = P0^1; // Sensor 2 connected to P0.1
+
+// Class to handle the visitor counter
+class VisitorCounter {
+private:
+    unsigned int count;
+    
+public:
+    VisitorCounter() : count(0) {}
+    
+    void increment() {
+        count++;
+    }
+    
+    void decrement() {
+        count--;
+    }
+    
+    unsigned int getCount() const {
+        return count;
+    }
+};
+
+// Global instance of the VisitorCounter class
+VisitorCounter counter;
+
+void main() {
+    // Initialize the counter to 0
+    counter = VisitorCounter();
+    
+    while(1) {
+        // Check sensor 1 for visitor entry
+        if (sensor1 == 1) {
+            // Increment the counter for visitor entry
+            counter.increment();
+            while(sensor1 == 1); // Wait until the visitor leaves the sensor area
+        }
+        
+        // Check sensor 2 for visitor exit
+        if (sensor2 == 1) {
+            // Decrement the counter for visitor exit
+            counter.decrement();
+            while(sensor2 == 1); // Wait until the visitor leaves the sensor area
+        }
+        
+        // Add code here to display the visitor count or send it to a cloud server
+    }
+}
